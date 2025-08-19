@@ -1,0 +1,12 @@
+{
+  "name": "data-insights-action",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "node api/gsc-query.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
