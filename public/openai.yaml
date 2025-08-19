@@ -1,0 +1,56 @@
+openapi: 3.1.0
+info:
+  title: Data Insights Action
+  version: "1.0.0"
+  description: |
+    Custom GPT action to analyze verified Google Search Console properties.
+    Auto-encodes full URLs for compatibility.
+
+    Privacy Policy: https://your-vercel-app.vercel.app/privacy.html
+servers:
+  - url: seo-data-insights-avy1-l50wz8xd6.vercel.app
+paths:
+  /api/gsc-query:
+    post:
+      operationId: runGSCQuery
+      summary: Run Search Console query with auto-encoded site URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [siteInput, startDate, endDate, dimensions]
+              properties:
+                siteInput:
+                  type: string
+                  description: Domain or full URL (e.g. https://example.com/)
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+                dimensions:
+                  type: array
+                  items:
+                    type: string
+                rowLimit:
+                  type: integer
+                dataState:
+                  type: string
+      responses:
+        "200":
+          description: Encoded query result with GSC insights
+components:
+  securitySchemes:
+    google_oauth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
+          tokenUrl: https://oauth2.googleapis.com/token
+          scopes:
+            https://www.googleapis.com/auth/webmasters.readonly: Read-only GSC access
+security:
+  - google_oauth: []
