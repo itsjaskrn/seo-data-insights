@@ -6,9 +6,9 @@ info:
     Custom GPT action to analyze verified Google Search Console properties.
     Auto-encodes full URLs for compatibility.
 
-    Privacy Policy: https://your-vercel-app.vercel.app/privacy.html
+    Privacy Policy: https://seo-data-insights-l5g0p32mq-jaskaran-singhs-projects-70feb45b.vercel.app/privacy.html
 servers:
-  - url: seo-data-insights-avy1-l50wz8xd6.vercel.app
+  - url: https://seo-data-insights-l5g0p32mq-jaskaran-singhs-projects-70feb45b.vercel.app/
 paths:
   /api/gsc-query:
     post:
