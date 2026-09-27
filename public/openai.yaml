@@ -1,19 +1,44 @@
 openapi: 3.1.0
 info:
   title: Data Insights Action
-  version: "1.0.0"
-  description: |
-    Custom GPT action to analyze verified Google Search Console properties.
-    Auto-encodes full URLs for compatibility.
-
-    Privacy Policy: https://seo-data-insights-l5g0p32mq-jaskaran-singhs-projects-70feb45b.vercel.app/privacy.html
+  version: "1.1.0"
+  description: Read Search Console properties and performance data for the connected Google account.
 servers:
-  - url: https://seo-data-insights-l5g0p32mq-jaskaran-singhs-projects-70feb45b.vercel.app/
+  - url: https://seo-data-insights-l5g0p32mq-jaskaran-singhs-projects-70feb45b.vercel.app
 paths:
+  /api/gsc-sites:
+    get:
+      operationId: listGSCProperties
+      summary: List Search Console properties accessible to the connected user
+      security:
+        - google_oauth:
+            - https://www.googleapis.com/auth/webmasters.readonly
+      responses:
+        "200":
+          description: Accessible properties
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  siteEntry:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        siteUrl:
+                          type: string
+                        permissionLevel:
+                          type: string
+        "401":
+          description: Google sign-in required or token expired
   /api/gsc-query:
     post:
       operationId: runGSCQuery
-      summary: Run Search Console query with auto-encoded site URL
+      summary: Query performance for a selected Search Console property
+      security:
+        - google_oauth:
+            - https://www.googleapis.com/auth/webmasters.readonly
       requestBody:
         required: true
         content:
@@ -24,7 +49,7 @@ paths:
               properties:
                 siteInput:
                   type: string
-                  description: Domain or full URL (e.g. https://example.com/)
+                  description: Exact siteUrl from listGSCProperties, including URL protocol or sc-domain prefix
                 startDate:
                   type: string
                   format: date
@@ -35,13 +60,19 @@ paths:
                   type: array
                   items:
                     type: string
+                    enum: [date, query, page, country, device, searchAppearance]
                 rowLimit:
                   type: integer
+                  minimum: 1
+                  maximum: 25000
                 dataState:
                   type: string
+                  enum: [final, all, hourly_all]
       responses:
         "200":
-          description: Encoded query result with GSC insights
+          description: Search Analytics API response
+        "401":
+          description: Google sign-in required or token expired
 components:
   securitySchemes:
     google_oauth:
@@ -51,6 +82,4 @@ components:
           authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
           tokenUrl: https://oauth2.googleapis.com/token
           scopes:
-            https://www.googleapis.com/auth/webmasters.readonly: Read-only GSC access
-security:
-  - google_oauth: []
+            https://www.googleapis.com/auth/webmasters.readonly: Read-only Search Console access
